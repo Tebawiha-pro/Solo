@@ -11,19 +11,30 @@ workflows:
       - name: Create Android and Fix compileSdk
         script: |
           flutter create . --platforms=android --org com.tebawiha.solo
-          echo "Checking files..."
-          ls -la
-          ls -la android/app/ || echo "android/app not found"
-          FILE="android/app/build.gradle"
-          echo "Fixing $FILE"
-          sed -i '' 's/compileSdkVersion 33/compileSdkVersion 36/g' $FILE
-          sed -i '' 's/compileSdk 33/compileSdk 36/g' $FILE
-          sed -i '' 's/targetSdkVersion 33/targetSdkVersion 36/g' $FILE
-          sed -i '' 's/targetSdk 33/targetSdk 36/g' $FILE
-          sed -i '' 's/flutter.compileSdkVersion/36/g' $FILE
-          sed -i '' 's/flutter.targetSdkVersion/36/g' $FILE
-          echo "--- File after fix ---"
-          cat $FILE
+          echo "Checking..."
+          ls android/app/
+          FILE_KTS="android/app/build.gradle.kts"
+          FILE_GRADLE="android/app/build.gradle"
+          
+          if [ -f "$FILE_KTS" ]; then
+            echo "Fixing KTS file: $FILE_KTS"
+            sed -i '' 's/compileSdk = flutter.compileSdkVersion/compileSdk = 36/g' $FILE_KTS
+            sed -i '' 's/compileSdkVersion 33/compileSdkVersion 36/g' $FILE_KTS
+            sed -i '' 's/compileSdk = 33/compileSdk = 36/g' $FILE_KTS
+            sed -i '' 's/targetSdk = flutter.targetSdkVersion/targetSdk = 36/g' $FILE_KTS
+            sed -i '' 's/targetSdkVersion 33/targetSdkVersion 36/g' $FILE_KTS
+            sed -i '' 's/targetSdk = 33/targetSdk = 36/g' $FILE_KTS
+            cat $FILE_KTS
+          fi
+
+          if [ -f "$FILE_GRADLE" ]; then
+            echo "Fixing Gradle file: $FILE_GRADLE"
+            sed -i '' 's/compileSdkVersion 33/compileSdkVersion 36/g' $FILE_GRADLE
+            sed -i '' 's/targetSdkVersion 33/targetSdkVersion 36/g' $FILE_GRADLE
+            sed -i '' 's/flutter.compileSdkVersion/36/g' $FILE_GRADLE
+            sed -i '' 's/flutter.targetSdkVersion/36/g' $FILE_GRADLE
+            cat $FILE_GRADLE
+          fi
       - name: Get Flutter packages
         script: |
           flutter pub upgrade
