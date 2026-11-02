@@ -40,10 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadMessages() async {
-    final history = await AppStorage.getChatHistory();
-    setState(() {
-      messages = history.map((e) => {'role': 'user', 'text': e['user']}).toList();
-    });
+    final history = await AppStorage.getHistory();
+    setState(() => messages = history);
   }
 
   void _handleLongPressStart() {
