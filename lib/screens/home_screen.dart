@@ -40,8 +40,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadMessages() async {
-    final history = await LocalStorage.getHistory();
-    setState(() => messages = history);
+    final history = await AppStorage.getChatHistory();
+    setState(() {
+      messages = history.map((e) => {'role': 'user', 'text': e['user']}).toList();
+    });
   }
 
   void _handleLongPressStart() {
@@ -61,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _handleSendText() {
     if (_textController.text.trim().isEmpty) return;
     String text = _textController.text.trim();
-    LocalStorage.saveMessage('user', text);
+    AppStorage.saveMessage('user', text);
     setState(() {
       messages.add({'role': 'user', 'text': text});
     });
@@ -70,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Future.delayed(Duration(seconds: 2), () {
       if (mounted) {
         String aiReply = "HAHAHA you porcupine! You said: $text";
-        LocalStorage.saveMessage('ai', aiReply);
+        AppStorage.saveMessage('ai', aiReply);
         setState(() {
           messages.add({'role': 'ai', 'text': aiReply});
           isSpeaking = false;
@@ -125,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 leading: Icon(Icons.delete_outline),
                 title: Text('Clear History'),
                 onTap: () async {
-                  await LocalStorage.clear();
+                  await AppStorage.clear();
                   setState(() => messages = []);
                   Navigator.pop(context);
                 },
