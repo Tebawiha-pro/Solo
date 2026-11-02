@@ -8,18 +8,22 @@ workflows:
       xcode: latest
       cocoapods: default
     scripts:
-      - name: Create Android folder
+      - name: Create Android and Fix compileSdk
         script: |
           flutter create . --platforms=android --org com.tebawiha.solo
-      - name: Fix compileSdk to 36
-        script: |
-          sed -i.bak "s/compileSdkVersion 33/compileSdkVersion 36/g" android/app/build.gradle
-          sed -i.bak "s/targetSdkVersion 33/targetSdkVersion 36/g" android/app/build.gradle
-          sed -i.bak "s/compileSdk 33/compileSdk 36/g" android/app/build.gradle
-          sed -i.bak "s/targetSdk 33/targetSdk 36/g" android/app/build.gradle
-          sed -i.bak "s/flutter.compileSdkVersion/36/g" android/app/build.gradle
-          sed -i.bak "s/flutter.targetSdkVersion/36/g" android/app/build.gradle
-          cat android/app/build.gradle
+          echo "Checking files..."
+          ls -la
+          ls -la android/app/ || echo "android/app not found"
+          FILE="android/app/build.gradle"
+          echo "Fixing $FILE"
+          sed -i '' 's/compileSdkVersion 33/compileSdkVersion 36/g' $FILE
+          sed -i '' 's/compileSdk 33/compileSdk 36/g' $FILE
+          sed -i '' 's/targetSdkVersion 33/targetSdkVersion 36/g' $FILE
+          sed -i '' 's/targetSdk 33/targetSdk 36/g' $FILE
+          sed -i '' 's/flutter.compileSdkVersion/36/g' $FILE
+          sed -i '' 's/flutter.targetSdkVersion/36/g' $FILE
+          echo "--- File after fix ---"
+          cat $FILE
       - name: Get Flutter packages
         script: |
           flutter pub upgrade
