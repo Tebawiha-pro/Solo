@@ -11,6 +11,15 @@ workflows:
       - name: Create Android folder
         script: |
           flutter create . --platforms=android --org com.tebawiha.solo
+      - name: Fix compileSdk to 36
+        script: |
+          sed -i.bak "s/compileSdkVersion 33/compileSdkVersion 36/g" android/app/build.gradle
+          sed -i.bak "s/targetSdkVersion 33/targetSdkVersion 36/g" android/app/build.gradle
+          sed -i.bak "s/compileSdk 33/compileSdk 36/g" android/app/build.gradle
+          sed -i.bak "s/targetSdk 33/targetSdk 36/g" android/app/build.gradle
+          sed -i.bak "s/flutter.compileSdkVersion/36/g" android/app/build.gradle
+          sed -i.bak "s/flutter.targetSdkVersion/36/g" android/app/build.gradle
+          cat android/app/build.gradle
       - name: Get Flutter packages
         script: |
           flutter pub upgrade
