@@ -13,6 +13,7 @@ workflows:
           flutter create . --platforms=android --org com.tebawiha.solo
       - name: Get Flutter packages
         script: |
+          flutter pub upgrade
           flutter packages pub get
       - name: Build APK
         script: |
@@ -20,7 +21,3 @@ workflows:
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
-    publishing:
-      email:
-        recipients:
-          - tebawiha@example.com
